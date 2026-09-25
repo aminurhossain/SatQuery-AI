@@ -1,148 +1,164 @@
-Problem Statement Proposal
-SatQuery AI: An Interactive Vision-Language Assistant for Multimodal Remote Sensing
-Image Analysis through Text Queries
-Problem Statement Title
-SatQuery AI: An Interactive Vision-Language Assistant for Multimodal Remote Sensing Image Analysis through
-Text Queries
-Mentors: Md Aminur Hossain, Sanjay K Singh, S Devakanth Naidu
-Description (Background, Detailed Description and Expected Solution)
-Background
-Remote-sensing imagery is widely used for agricultural monitoring, disaster management, urban planning, forest
-monitoring, water-resource assessment, infrastructure mapping, and environmental analysis. However, most existing
-remote-sensing AI solutions are developed as isolated applications for a single predefined task, such as land-cover
-classification, object detection, visual question answering, or change detection. These systems often require users to
-understand satellite-data characteristics, GIS workflows, model selection, and task-specific parameters. Consequently,
-non-expert users may find it difficult to obtain meaningful information from satellite imagery through simple
-natural-language queries.
-Many operational remote-sensing questions cannot always be answered reliably using a single optical image. Relevant
-information may be distributed across paired or multiple observations acquired at different times or by different sensors.
-Optical and multispectral imagery provides spectral and contextual information, whereas synthetic aperture radar (SAR)
-provides complementary structural information and supports day-and-night acquisition through cloud cover. Multitemporal
-image pairs are required to identify and interpret changes over time, while co-registered optical–SAR pairs can provide
-more complete and reliable information than either modality alone.
-A general-purpose large language model (LLM) or vision-language model (VLM) cannot be expected to perform these
-specialised tasks reliably without adaptation to remote-sensing imagery, sensor characteristics, and domain-specific
-terminology. The proposed solution must therefore include remote-sensing fine-tuning or domain adaptation and may
-employ multiple specialised models for different tasks. BigEarthNet.txt will serve as the primary dataset for adapting
-image–text representations to multisensor remote-sensing data. VRSBench and RSVQA will be used to evaluate
-single-image captioning, grounding, and visual question answering, while CDVQA will be used to evaluate multitemporal
-change-based visual question answering.
-The novelty of SatQuery AI lies in its agentic, query-driven framework. Instead of applying a single generic VLM, the
-system selects and executes suitable remote-sensing specialist models, validates inputs, combines their outputs, and
-returns an evidence-grounded response.
-Detailed Description
-The objective is to develop SatQuery AI, a software-based agentic vision-language assistant for analysing single and
-paired remote-sensing images through natural-language queries. Single-image understanding is a mandatory baseline,
-while the principal focus is joint reasoning over paired cross-modal and multitemporal imagery.
-Defined Input Scope
-Single image: One optical/multispectral or SAR image for captioning, visual question answering, and text-guided region
-grounding.
-Cross-modal pair: Co-registered optical/multispectral and SAR images of the same geographic area for joint information
-extraction and cross-modal analysis.
-Bi-temporal pair: Two spatially corresponding images of the same geographic area acquired at different times for change
-detection, change description, and change-based visual question answering.
-Supported formats: GeoTIFF or TIFF for geospatial imagery. PNG and JPEG inputs may be accepted only for the
-prescribed public benchmark datasets.
-Mandatory Functional Scope
-● Remote-sensing adaptation: At least one visual or vision-language component must be fine-tuned or otherwise
-adapted using BigEarthNet.txt or the any open source training data.
-● Single-image baseline: Visual question answering shall be mandatory. Each solution must additionally implement either
-captioning/scene description or text-guided region grounding.
-● Multi-image change analysis: Change description or change-based visual question answering from a bi-temporal image
-pair shall be mandatory. A spatial change map may also be generated where reference masks are available.
-● Cross-modal pair analysis: The system must extract complementary information from a co-registered
-optical/multispectral and SAR image pair.
-● Agentic orchestration: The system must automatically select, sequence, and execute the appropriate specialist models
-or tools according to the query and input configuration.
-Representative Queries
-• “Describe the land-cover and major objects visible in this image.”
-• “Highlight the water body referred to in the query.”
-• “What changed between these two dates, and where did the change occur?”
-• “Use the optical and SAR images together to identify built-up and water-covered regions.”
-• “Has the built-up area increased, decreased, or remained unchanged?”
-Agentic Model and Tool Orchestration
-The system may use multiple specialised components, such as a remote-sensing VQA or captioning model, a grounding
-model, a change-understanding or change-VQA model, and an optical–SAR fusion or information-extraction model.
-• interpret the query and classify the requested task;
-• check the number, modality, format, metadata, and compatibility of the input images;
-• select one or more models or tools from a predefined registry;
-• configure only permitted task parameters and execute the selected workflow;
-• combine textual and spatial outputs, estimate confidence, and return visual evidence; and
-• provide an auditable execution summary containing the selected task, model/tool names, and key parameters.
-The controller may perform internal task planning; however, only the observable execution trace, including the selected
-task, models or tools, permitted parameters, and outputs will be evaluated. Internal reasoning text is neither required nor
-evaluated.
-Expected Solution
-The expected solution is an interactive GUI or web application with an agentic remote-sensing AI backend. It should accept
-supported image inputs and natural-language queries, select the appropriate specialist workflow, and return
-evidence-grounded textual and visual results.
-The solution should include:
-Input upload and compatibility checking.
-A remote-sensing-adapted vision-language component.
-Specialist tools for VQA, captioning or grounding, change understanding, and optical–SAR analysis.
-An agentic controller for task routing, tool execution, and output integration.
-Visual evidence, confidence information, execution summaries, and downloadable reports.
-Each solution must demonstrate single-image VQA, one additional single-image task, multitemporal change understanding,
-optical–SAR paired-image analysis, and agentic model/tool orchestration. A generic LLM or VLM without remote-sensing
-adaptation will not satisfy the requirements.
-Deliverables
-An interactive GUI or web application with an agentic remote-sensing AI backend, Codes and models including test and
-demonstration.
-Implementation Scope
-The system shall support single optical/multispectral or SAR images, co-registered optical–SAR pairs, and bi-temporal
-pairs in GeoTIFF/TIFF or approved benchmark formats. It must perform single-image VQA, one additional single-image
-task, change analysis, optical–SAR joint analysis, and agentic model/tool selection through an interactive GUI or web
-application.
-Evaluation/Judging Criteria
-Final evaluation will use prescribed public benchmark test subsets and an ISRO/SAC evaluation dataset. Scores will be
-normalised before combining different metrics.
-Evaluation Component Metric / Evidence Weight
-Agentic task routing and tool orchestration
-Correct task and specialist-model/tool selection, valid execution
-sequence, input validation, permitted-parameter configuration, and
-invalid-call rate
-20%
-Evaluation Component Metric / Evidence Weight
-Single-image remote-sensing VLM
-performance
-VRSBench and RSVQA VQA accuracy; VRSBench captioning or
-grounding metrics, depending on the implemented task
-20%
-Multitemporal change understanding
-CDVQA average and overall answer accuracy; change-map F1-score
-and IoU only where reference change masks are provided
-25%
-ISRO cross-modal paired-image analysis
-Cartosat-2S optical and RISAT SAR pairs: query-answer accuracy,
-information-extraction F1/IoU, and evidence localisation
-25%
-Robustness, usability, and reporting
-GeoTIFF/TIFF handling, graceful error messages, latency, confidence
-reporting, visual evidence, and downloadable report
-10%
-Public benchmarks will be evaluated using the prescribed test splits. The ISRO/SAC evaluation set will contain
-pre-georeferenced and co-registered Cartosat-2S optical and RISAT SAR image pairs, with task-specific reference
-answers, labels, bounding boxes, or masks, as applicable. Evaluation annotations will not be disclosed to participating
-teams.
-Dataset Link
-Training / Fine-Tuning Dataset
-BigEarthNet.txt — primary dataset for remote-sensing adaptation using co-registered Sentinel-1 SAR, Sentinel-2
-multispectral imagery, and diverse text annotations. Link: https://arxiv.org/abs/2603.29630. All datasets are available online
-open source.
-Public Evaluation Benchmarks
-• VRSBench — for remote-sensing image captioning, visual grounding, and VQA. Link: https://arxiv.org/abs/2406.12384
-• RSVQA — for single-image remote-sensing visual question answering. Link: https://arxiv.org/abs/2003.07333
-• CDVQA — for change-detection-based visual question answering using multitemporal image pairs. Link:
-https://arxiv.org/abs/2112.06343
-ISRO/SAC Evaluation Data
-A hidden evaluation set of pre-georeferenced and co-registered Cartosat-2S optical imagery and RISAT SAR imagery will
-be used for cross-modal paired-image analysis. Bi-temporal pairs and corresponding annotations or question-answer
-references will be provided where required for change-analysis evaluation. ISRO datasets will be given during testing on
-hackathon day.
-Category
-Software
-Theme
-Space Technology
-Organization (Ministry/Department Name): Space Applications Centre, ISRO, Department of Space
-Domain Experts:
-Aminur Hossain, aminur@sac.isro.gov.in , md.aminurhossain@gmail.com
+# SatQuery AI: An Interactive Vision-Language Assistant for Multimodal Remote Sensing Image Analysis
+
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Theme](https://img.shields.io/badge/Theme-Space_Technology-orange.svg)](#)
+[![Domain](https://img.shields.io/badge/Organization-SAC%20%2F%20ISRO-brightgreen.svg)](#)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](#)
+
+> **Smart India Hackathon (SIH)**  
+> **Problem Statement:** SatQuery AI — An Interactive Vision-Language Assistant for Multimodal Remote Sensing Image Analysis through Text Queries  
+> **Organization:** Space Applications Centre (SAC), ISRO, Department of Space  
+> **Mentors / Domain Experts:** Md Aminur Hossain, Sanjay K Singh, S Devakanth Naidu
+
+---
+
+## 📌 Overview
+
+**SatQuery AI** is an agentic vision-language platform designed to analyze complex remote-sensing imagery using simple natural-language queries. Unlike standard single-task GIS pipelines or generic vision-language models (VLMs), SatQuery AI employs an intelligent, agent-driven orchestration layer that automatically selects, sequences, and executes domain-adapted specialist models across optical, Synthetic Aperture Radar (SAR), multitemporal, and cross-modal satellite datasets.
+
+---
+
+## 🎯 Key Features & Capabilities
+
+- **Natural Language Remote Sensing Analysis:** Query single or paired remote-sensing images using conversational prompts.
+- **Agentic Model & Tool Orchestrator:** Dynamic intent classification, format validation, model selection from a specialist registry, and auditable parameter execution.
+- **Cross-Modal Reasoning (Optical + SAR):** Jointly process co-registered optical/multispectral (e.g., Sentinel-2, Cartosat-2S) and SAR (e.g., Sentinel-1, RISAT) imagery for structural and contextual feature fusion.
+- **Bi-Temporal Change Analysis:** Detect, localize, and query changes between historical and recent passes using Change VQA and spatial change heatmaps.
+- **Domain-Specific Fine-Tuning:** Vision-language models adapted for multispectral bands, geospatial resolutions, and remote-sensing terminology via datasets like **BigEarthNet.txt**.
+- **Evidence-Grounded Visualization & Reporting:** Spatial bounding boxes, segmentation masks, confidence intervals, auditable execution traces, and downloadable analysis reports.
+
+---
+
+## 📥 Supported Input Modalities & Formats
+
+| Input Type | Supported Data | Primary Tasks |
+| :--- | :--- | :--- |
+| **Single Image** | Optical, Multispectral, or SAR | Visual Question Answering (RSVQA), Scene Description, Visual Grounding |
+| **Cross-Modal Pair** | Co-registered Optical/Multispectral + SAR | Complementary feature extraction, cloud-penetrating water/built-up mapping |
+| **Bi-Temporal Pair** | Multi-date image pairs ($T_1$ & $T_2$) | Change detection, change description, Change-VQA (CDVQA), difference mapping |
+
+- **Geospatial Formats:** GeoTIFF / TIFF (native metadata & coordinate reference systems preserved).
+- **Benchmark Formats:** PNG / JPEG (supported for standard evaluation subsets).
+
+---
+
+## 🧠 System Architecture & Workflow
+
+```text
+[User Query + Image Input(s)]
+           │
+           ▼
+┌──────────────────────────────────────────────┐
+│       Agentic Orchestration Controller       │
+│  - Task Classification & Intent Parsing      │
+│  - Metadata, Format & Compatibility Checks   │
+│  - Tool Registry & Execution Planner         │
+└──────┬──────────────┬──────────────┬─────────┘
+       │              │              │
+       ▼              ▼              ▼
+┌──────────────┐┌──────────────┐┌──────────────┐
+│ Single-Image ││  Cross-Modal ││ Bi-Temporal  │
+│  RS-VLM /    ││ Fusion Engine││ Change VQA / │
+│  Grounding   ││(Optical+SAR) ││ Change Maps  │
+└──────┬───────┘└──────┬───────┘└──────┬───────┘
+       │               │               │
+       └───────────────┼───────────────┘
+                       ▼
+┌──────────────────────────────────────────────┐
+│           Response & Evidence Aggregator     │
+│  - Spatial Visual Grounding & Mask Overlays   │
+│  - Confidence Scoring & Auditable Trace      │
+│  - Interactive UI & Downloadable PDF Reports │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+## 📊 Datasets & Benchmarks
+
+### 1. Training & Fine-Tuning
+- **[BigEarthNet.txt](https://arxiv.org/abs/2603.29630):** Primary multimodal remote-sensing dataset utilizing Sentinel-1 (SAR) and Sentinel-2 (Multispectral) image-text pairs for domain adaptation.
+
+### 2. Public Evaluation Benchmarks
+- **[VRSBench](https://arxiv.org/abs/2406.12384):** Evaluation for remote-sensing image captioning, visual grounding, and single-image VQA.
+- **[RSVQA](https://arxiv.org/abs/2003.07333):** High-resolution and low-resolution satellite visual question answering.
+- **[CDVQA](https://arxiv.org/abs/2112.06343):** Multitemporal change-detection visual question answering.
+
+### 3. ISRO / SAC Evaluation Set (Hidden Benchmark)
+- Co-registered **Cartosat-2S** (Optical) and **RISAT** (SAR) pairs for validation of cross-modal reasoning and change assessment.
+
+---
+
+## 📈 Evaluation Criteria
+
+| Evaluation Component | Metrics & Evidence | Weight |
+| :--- | :--- | :---: |
+| **Agentic Task Routing & Orchestration** | Task selection accuracy, valid execution paths, input verification, parameter configuration, invalid call rate | **20%** |
+| **Single-Image Remote-Sensing VLM** | VRSBench & RSVQA accuracy; captioning/grounding metrics | **20%** |
+| **Multitemporal Change Understanding** | CDVQA answer accuracy, change map F1-score & IoU | **25%** |
+| **ISRO Cross-Modal Paired Analysis** | Cartosat-2S & RISAT QA accuracy, extraction F1/IoU, visual evidence localization | **25%** |
+| **Robustness, Usability & Reporting** | GeoTIFF handling, latency, confidence reporting, UI/UX, downloadable reports | **10%** |
+
+---
+
+## 🚀 Quickstart
+
+### Prerequisites
+- Python 3.10+
+- CUDA-enabled GPU (recommended $\ge$ 16GB VRAM)
+- GDAL & Rasterio native dependencies
+
+### 1. Installation
+```bash
+# Clone the repository
+git clone https://github.com/your-username/SatQuery-AI.git
+cd SatQuery-AI
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 2. Configure Environment
+```bash
+cp .env.example .env
+# Set your model weights paths, cache directories, and server port in .env
+```
+
+### 3. Run the Application
+```bash
+# Start backend and web GUI
+python app.py
+```
+Open your browser at `http://localhost:7860` to access the interface.
+
+---
+
+## 💬 Example Queries
+
+- **Single Image Analysis:**  
+  > *"Describe the predominant land-cover classes and list visible transport infrastructure in this scene."*
+- **Visual Grounding:**  
+  > *"Highlight the reservoir boundary and locate water bodies referred to in the image."*
+- **Multitemporal Change Detection:**  
+  > *"What structural developments occurred between Date 1 and Date 2, and where did urbanization happen?"*
+- **Cross-Modal SAR + Optical:**  
+  > *"Use the optical and SAR images together to isolate flood boundaries beneath cloud cover."*
+
+---
+
+## 👥 Contributors & Mentorship
+
+- **Mentors (SAC / ISRO):**
+  - **Md Aminur Hossain** ([aminur@sac.isro.gov.in](mailto:aminur@sac.isro.gov.in))
+  - **Sanjay K Singh**
+  - **S Devakanth Naidu**
+- **Developed by:** [Your Team Name / GitHub Handles]
+
+---
+
+## 📜 License
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
