@@ -8,6 +8,10 @@
 **Contact:** aminur@sac.isro.gov.in, md.aminurhossain@gmail.com  
 
 ---
+##
+Instruction: Please focused on GUI and Agentic AI integration with Pre trained model backend. Try to add different type of problems inside the framework with novel architeture. 
+
+
 
 ## 1. Background
 
